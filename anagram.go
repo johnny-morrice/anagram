@@ -8,11 +8,16 @@ import (
 	leven "github.com/texttheater/golang-levenshtein/levenshtein"
 )
 
+// Anagram represents a collection of words which are anagrams of one another.
 type Anagram struct {
+	// Words are each anagrams of one another.
+	// Words in Anagrams returned by library functions are sorted alphabetically.
 	Words []string
+	// Normal is the normalised representation of the anagram.
 	Normal string
 }
 
+// ByNormal Anagram sorting.
 type ByNormal []*Anagram
 
 func (a ByNormal) Len() int { return len(a)}
@@ -22,6 +27,7 @@ func (a ByNormal) Less(i, j int) bool {
 	return a[i].Normal < a[j].Normal
 }
 
+// ByNumber sorts anagrams by the number of Words.
 type ByNumber []*Anagram
 
 func (a ByNumber) Len() int { return len(a)}
@@ -31,6 +37,7 @@ func (a ByNumber) Less(i, j int) bool {
 	return len(a[i].Words) < len(a[j].Words)
 }
 
+// Normalize an Anogram.  Returns an error if the provided words are not an anogram.
 func (ar *Anagram) Normalize() error {
 	if l := len(ar.Words); l < 2 {
 		return fmt.Errorf("Cannot create anagram with %v words", l)
@@ -55,6 +62,7 @@ func (ar *Anagram) Normalize() error {
 	return nil
 }
 
+// Eq returns true if the other Anagram is equal.
 func (ar *Anagram) Eq(other *Anagram) bool {
 	if ar.Normal != other.Normal {
 		return false
@@ -69,6 +77,7 @@ func (ar *Anagram) Eq(other *Anagram) bool {
 	return true
 }
 
+// Rank each combination of words in the anagram.
 func (ar *Anagram) Rank(ranker Ranker) []Ranking {
 	indices := bruteCombintations2(len(ar.Words))
 	ranks := make([]Ranking, len(indices))
@@ -109,12 +118,14 @@ func fact(n int) int {
 	return f
 }
 
+// Ranking represents the interestingness of an anagram.
 type Ranking struct {
 	A string
 	B string
 	Rank int
 }
 
+// ByRank sorts Rankings by their Rank.
 type ByRank []Ranking
 
 func (r ByRank) Len() int { return len(r)}
@@ -124,10 +135,12 @@ func (r ByRank) Less(i, j int) bool {
 	return r[i].Rank < r[j].Rank
 }
 
+// Ranker represents a string distance function.
 type Ranker interface {
 	Rank(a, b string) int
 }
 
+// LevenshteinRanker provides Levenshtein string distance ranking.
 type LevenshteinRanker struct {
 	Options leven.Options
 }
@@ -156,6 +169,7 @@ func (hr hammingRanker) Rank(a, b string) int {
 	return score
 }
 
+// HammingRanker provides Hamming string distance ranking.
 func HammingRanker() Ranker {
 	return hammingRanker{}
 }
@@ -166,6 +180,7 @@ func (lr LevenshteinRanker) Rank(a, b string) int {
 	return leven.DistanceForStrings(ar, br, lr.Options)
 }
 
+// Find all anagrams among the input words.
 func Find(words []string) []*Anagram{
 	buckets := map[string][]string{}
 
@@ -191,7 +206,7 @@ func Find(words []string) []*Anagram{
 	return anas
 }
 
-// TODO can optimize surely.
+// SortNormal provides a normalised representation of a word.
 func SortNormal(word string) string {
 	parts := strings.Split(word, "")
 	sort.Strings(parts)
