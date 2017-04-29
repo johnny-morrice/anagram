@@ -19,7 +19,6 @@ Available Commands:
 Flags:
       --config string   config file (default is $HOME/.anagram.yaml)
       --friendly        chomp and uniq the input (default true)
-  -t, --toggle          Help message for toggle
       --words string    dictionary file (one word per line)
 ```
 

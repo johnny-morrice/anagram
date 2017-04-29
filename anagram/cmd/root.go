@@ -53,7 +53,6 @@ func init() {
 	cobra.OnInitialize(initConfig)
 
 	RootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.anagram.yaml)")
-	RootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 
 	RootCmd.PersistentFlags().StringVar(&wordFile, "words", "", "dictionary file (one word per line)")
 	RootCmd.PersistentFlags().BoolVar(&friendly, "friendly", true, "chomp and uniq the input")
