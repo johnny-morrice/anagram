@@ -67,75 +67,19 @@ func (ar *Anagram) Rank(ranker Ranker) []Ranking {
 
 // TODO Could use arrays.
 func bruteCombintations2(n int) [][]int {
-	len := fact(n) / fact(n - 2)
+	len := fact(n) / (fact(2) * fact(n - 2))
 	out := make([][]int, len)
 
 	mark := 0
 	for i := 0; i < n; i++ {
 		for j := i + 1; j < n; j++ {
 			out[mark] = []int{i, j}
+			mark++
 		}
 	}
 
 	return out
 }
-
-// Based on algorithm T from TAOCP Volume 4A "Generating All Combinations"
-// func knuthCombinations(n, t int) [][]int {
-// 	if t <= 0 || t >= n || n < 3 {
-// 		panic(fmt.Sprintf("invalid arguments: %v %v", n, t)
-// 	}
-//
-// 	len := fact(n) / fact(n - t)
-// 	out := make([][]int, len)
-// 	mark := 0
-//
-// 	c := make([]int, t + 2)
-// 	for j := 0; j < t; j++ {
-// 		c[j] = i
-// 	}
-//
-// 	c[t + 1] = n
-// 	c[t + 2] = 0
-//
-// 	var x int
-// 	for j := t;; {
-// 		copy(out, c, t, mark)
-// 		mark++
-//
-// 		if j > -1 {
-// 			x = j
-// 			goto T6
-// 		}
-//
-// 		if c[0] + 1 < c[1] {
-// 			c[0] = c[0] + 1
-// 			continue
-// 		} else {
-// 			j := 1
-// 		}
-//
-// 		for {
-// 			c[j - 1] = j - 2
-// 			x = c[j] + 1
-// 			if x == c[j + 1] {
-// 				j++
-// 			} else {
-// 				break
-// 			}
-// 		}
-//
-// 		if j <= t {
-// 			break
-// 		}
-//
-// T6:
-// 		c[j] = x
-// 		j--
-// 	}
-//
-// 	return out
-// }
 
 func copy(out [][]int, comb []int, t, mark int) {
 	cpy := make([]int, t)
