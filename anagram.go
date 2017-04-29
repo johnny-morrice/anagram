@@ -85,17 +85,6 @@ func (ar *Anagram) Rank(ranker Ranker) []Ranking {
 	return ranks
 }
 
-// TODO use pool of goroutines.
-func RankAll(anagrams []*Anagram, ranker Ranker) []Ranking {
-	out := []Ranking{}
-
-	for _, a := range anagrams {
-		out = append(out, a.Rank(ranker)...)
-	}
-
-	return out
-}
-
 // TODO Could use arrays.
 func bruteCombintations2(n int) [][]int {
 	len := fact(n) / (fact(2) * fact(n - 2))
@@ -110,14 +99,6 @@ func bruteCombintations2(n int) [][]int {
 	}
 
 	return out
-}
-
-func copy(out [][]int, comb []int, t, mark int) {
-	cpy := make([]int, t)
-	for i := 0; i < t; i++ {
-		cpy[i] = comb[i]
-	}
-	out[mark] = cpy
 }
 
 func fact(n int) int {

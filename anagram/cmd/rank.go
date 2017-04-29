@@ -46,7 +46,7 @@ var rankCmd = &cobra.Command{
 		default:
 			die(fmt.Errorf("Unsupported string distance function: %v", rankFunc))
 		}
-		ranks := anagram.RankAll(anas, ranker)
+		ranks := rankAll(anas, ranker)
 		sort.Sort(sort.Reverse(anagram.ByRank(ranks)))
 
 		for _, r := range ranks {
@@ -59,6 +59,16 @@ func init() {
 	RootCmd.AddCommand(rankCmd)
 
 	rankCmd.Flags().StringVar(&rankFunc, "distance", LEVEN, "String distance function")
+}
+
+func rankAll(anagrams []*anagram.Anagram, ranker anagram.Ranker) []anagram.Ranking {
+	out := []anagram.Ranking{}
+
+	for _, a := range anagrams {
+		out = append(out, a.Rank(ranker)...)
+	}
+
+	return out
 }
 
 const LEVEN = "levenshtein"

@@ -87,36 +87,6 @@ func TestByRank(t *testing.T) {
 	}
 }
 
-func TestRankAll(t *testing.T) {
-	expect := []Ranking{
-		Ranking{
-			A: "act",
-			B: "cat",
-			Rank: 2,
-		},
-		Ranking{
-			A: "dog",
-			B: "god",
-			Rank: 4,
-		},
-	}
-
-	anagrams := []*Anagram{catAnagram, dogAnagram}
-
-	actual := RankAll(anagrams, DefaultLevenshteinRanker())
-
-	if len(expect) != len(actual) {
-		t.Error("Mismatch in expect/actual length")
-	}
-
-	for i, a := range actual {
-		e := expect[i]
-		if e != a {
-			t.Error("Unexpected Ranking at", i, ":", a)
-		}
-	}
-}
-
 func TestRank(t *testing.T) {
 	expect := []Ranking{
 		Ranking{
