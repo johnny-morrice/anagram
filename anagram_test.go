@@ -35,6 +35,77 @@ var slateAnagram *Anagram = &Anagram{
 	Normal: "aelst",
 }
 
+func TestByRank(t *testing.T) {
+	actual := []Ranking{
+		Ranking{
+			A: "dog",
+			B: "god",
+			Rank: 4,
+		},
+		Ranking{
+			A: "act",
+			B: "cat",
+			Rank: 2,
+		},
+	}
+
+	expect := []Ranking{
+		Ranking{
+			A: "act",
+			B: "cat",
+			Rank: 2,
+		},
+		Ranking{
+			A: "dog",
+			B: "god",
+			Rank: 4,
+		},
+	}
+
+	if len(actual) != len(expect) {
+		panic("Mismatched input/expect len")
+	}
+
+	sort.Sort(ByRank(actual))
+
+	for i, a := range actual {
+		e := expect[i]
+		if e != a {
+			t.Error("Unexpected ranking at", i, ":", a)
+		}
+	}
+}
+
+func TestRankAll(t *testing.T) {
+	expect := []Ranking{
+		Ranking{
+			A: "act",
+			B: "cat",
+			Rank: 2,
+		},
+		Ranking{
+			A: "dog",
+			B: "god",
+			Rank: 4,
+		},
+	}
+
+	anagrams := []*Anagram{catAnagram, dogAnagram}
+
+	actual := RankAll(anagrams, DefaultLevenshteinRanker())
+
+	if len(expect) != len(actual) {
+		t.Error("Mismatch in expect/actual length")
+	}
+
+	for i, a := range actual {
+		e := expect[i]
+		if e != a {
+			t.Error("Unexpected Ranking at", i, ":", a)
+		}
+	}
+}
+
 func TestRank(t *testing.T) {
 	expect := []Ranking{
 		Ranking{
@@ -68,14 +139,14 @@ func TestRank(t *testing.T) {
 	}
 }
 
-func TestGenAnagrams(t *testing.T) {
+func TestFind(t *testing.T) {
 	expect := []*Anagram{
 		catAnagram,
 		apeAnagram,
 		dogAnagram,
 	}
 
-	actual := GenAnagrams(words)
+	actual := Find(words)
 	sort.Sort(ByNormal(actual))
 
 	if len(expect) != len(actual) {

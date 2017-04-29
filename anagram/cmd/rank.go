@@ -22,23 +22,25 @@ package cmd
 
 import (
 	"fmt"
+	"sort"
 
 	"github.com/spf13/cobra"
+	"github.com/johnny-morrice/anagram"
 )
 
 // rankCmd represents the rank command
 var rankCmd = &cobra.Command{
 	Use:   "rank",
-	Short: "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
-
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+	Short: "Rank anagrams",
+	Long: `Find and rank anagrams according to string distance functions`,
 	Run: func(cmd *cobra.Command, args []string) {
-		// TODO: Work your own magic here
-		fmt.Println("rank called")
+		anas := find()
+		ranks := anagram.RankAll(anas, anagram.DefaultLevenshteinRanker())
+		sort.Sort(anagram.ByRank(ranks))
+
+		for _, r := range ranks {
+			fmt.Printf("%v\t%v\t%v\n", r.Rank, r.A, r.B)
+		}
 	},
 }
 

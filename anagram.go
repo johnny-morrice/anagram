@@ -161,7 +161,7 @@ func (lr LevenshteinRanker) Rank(a, b string) int {
 	return leven.DistanceForStrings(ar, br, lr.Options)
 }
 
-func GenAnagrams(words []string) []*Anagram{
+func Find(words []string) []*Anagram{
 	buckets := map[string][]string{}
 
 	for _, w := range words {

@@ -39,28 +39,7 @@ var findCmd = &cobra.Command{
 	Long: `Find anagrams and print to stdout.
 	If --word not provided, read from stdin.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		var input io.Reader
-		if wordFile == "" {
-			input = os.Stdin
-		} else {
-			file, err := os.Open(wordFile)
-
-			if err != nil {
-				die(err)
-			}
-
-			defer file.Close()
-
-			input = file
-		}
-
-		words := slurpLines(input)
-
-		if friendly {
-			words = cleanLines(words)
-		}
-
-		anas := anagram.GenAnagrams(words)
+		anas := find()
 
 		sort.Sort(anagram.ByNumber(anas))
 
@@ -68,6 +47,31 @@ var findCmd = &cobra.Command{
 			fmt.Println(strings.Join(a.Words, " "))
 		}
 	},
+}
+
+func find() []*anagram.Anagram{
+	var input io.Reader
+	if wordFile == "" {
+		input = os.Stdin
+	} else {
+		file, err := os.Open(wordFile)
+
+		if err != nil {
+			die(err)
+		}
+
+		defer file.Close()
+
+		input = file
+	}
+
+	words := slurpLines(input)
+
+	if friendly {
+		words = cleanLines(words)
+	}
+
+	return anagram.Find(words)
 }
 
 func init() {
