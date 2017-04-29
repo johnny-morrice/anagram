@@ -4,6 +4,8 @@ A fun anagram ranker for golang, inspired by this post by Mark Dominus:
 
 [Anagram Scoring](http://blog.plover.com/2017/02/21/#anagram-scoring)
 
+Supports Levenshtein and Hamming string distance functions.
+
 ## Usage
 
 Anagram toolkit to generate and rank anagrams according to
