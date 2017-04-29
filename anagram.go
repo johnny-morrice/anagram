@@ -170,15 +170,16 @@ func GenAnagrams(words []string) []*Anagram{
 	}
 
 	anas := []*Anagram{}
-	for _, ws := range buckets {
-		// TODO could optimize
-		a := &Anagram{Words: ws}
-		err := a.Normalize()
-
-		if err != nil {
-			panic(err)
+	for normal, ws := range buckets {
+		if len(ws) == 1 {
+			continue
 		}
-
+		
+		a := &Anagram{
+			Words: ws,
+			Normal: normal,
+		}
+		sort.Strings(a.Words)
 		anas = append(anas, a)
 	}
 
