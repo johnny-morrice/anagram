@@ -38,5 +38,5 @@ $ cat wlist_match{8..10}.txt | anagram find
 
 ```
 $ anagram rank --words wlist_match10.txt
-$ cat ~/workspace/words/wlist_match{8..10}.txt | anagram rank
+$ cat wlist_match{8..10}.txt | anagram rank
 ```
