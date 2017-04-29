@@ -32,7 +32,7 @@ import (
 var rankCmd = &cobra.Command{
 	Use:   "rank",
 	Short: "Rank anagrams",
-	Long: `Find and rank anagrams according to string distance functions`,
+	Long: `Find and rank anagrams according to a string distance function`,
 	Run: func(cmd *cobra.Command, args []string) {
 		anas := find()
 		ranks := anagram.RankAll(anas, anagram.DefaultLevenshteinRanker())
