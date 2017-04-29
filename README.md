@@ -9,7 +9,7 @@ Supports Levenshtein and Hamming string distance functions.
 ## Usage
 
 ```
-  anagram [command]
+anagram [command]
 
 Available Commands:
   find        Find anagrams
