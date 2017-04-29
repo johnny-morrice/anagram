@@ -8,10 +8,7 @@ Supports Levenshtein and Hamming string distance functions.
 
 ## Usage
 
-Anagram toolkit to find and rank anagrams according to
-	string distance algorithms.
-
-Usage:
+```
   anagram [command]
 
 Available Commands:
@@ -24,6 +21,7 @@ Flags:
       --friendly        chomp and uniq the input (default true)
   -t, --toggle          Help message for toggle
       --words string    dictionary file (one word per line)
+```
 
 ## Examples
 
