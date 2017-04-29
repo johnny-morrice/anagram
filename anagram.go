@@ -155,6 +155,30 @@ func DefaultLevenshteinRanker() Ranker {
 	return LevenshteinRanker{Options: leven.DefaultOptions}
 }
 
+type hammingRanker struct {}
+
+func (hr hammingRanker) Rank(a, b string) int {
+	if len(a) != len(b) {
+		panic("Computed Hamming distance on strings of unequal length")
+	}
+
+	arunes := []rune(a)
+	brunes := []rune(b)
+
+	score := 0
+	for i, ar := range arunes {
+		if br := brunes[i]; br != ar {
+			score++
+		}
+	}
+
+	return score
+}
+
+func HammingRanker() Ranker {
+	return hammingRanker{}
+}
+
 func (lr LevenshteinRanker) Rank(a, b string) int {
 	ar := []rune(a)
 	br := []rune(b)
@@ -174,7 +198,7 @@ func Find(words []string) []*Anagram{
 		if len(ws) == 1 {
 			continue
 		}
-		
+
 		a := &Anagram{
 			Words: ws,
 			Normal: normal,

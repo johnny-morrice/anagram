@@ -28,6 +28,8 @@ import (
 	"github.com/johnny-morrice/anagram"
 )
 
+var rankFunc string
+
 // rankCmd represents the rank command
 var rankCmd = &cobra.Command{
 	Use:   "rank",
@@ -35,7 +37,16 @@ var rankCmd = &cobra.Command{
 	Long: `Find and rank anagrams according to a string distance function`,
 	Run: func(cmd *cobra.Command, args []string) {
 		anas := find()
-		ranks := anagram.RankAll(anas, anagram.DefaultLevenshteinRanker())
+		var ranker anagram.Ranker
+		switch rankFunc {
+		case LEVEN:
+			ranker = anagram.DefaultLevenshteinRanker()
+		case HAMMING:
+			ranker = anagram.HammingRanker()
+		default:
+			die(fmt.Errorf("Unsupported string distance function: %v", rankFunc))
+		}
+		ranks := anagram.RankAll(anas, ranker)
 		sort.Sort(sort.Reverse(anagram.ByRank(ranks)))
 
 		for _, r := range ranks {
@@ -47,14 +58,8 @@ var rankCmd = &cobra.Command{
 func init() {
 	RootCmd.AddCommand(rankCmd)
 
-	// Here you will define your flags and configuration settings.
-
-	// Cobra supports Persistent Flags which will work for this command
-	// and all subcommands, e.g.:
-	// rankCmd.PersistentFlags().String("foo", "", "A help for foo")
-
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
-	// rankCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
-
+	rankCmd.Flags().StringVar(&rankFunc, "distance", LEVEN, "String distance function")
 }
+
+const LEVEN = "levenshtein"
+const HAMMING = "hamming"

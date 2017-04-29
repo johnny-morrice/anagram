@@ -35,6 +35,17 @@ var slateAnagram *Anagram = &Anagram{
 	Normal: "aelst",
 }
 
+func TestHammingRanker(t *testing.T) {
+	expect := 3
+
+	ranker := HammingRanker()
+	actual := ranker.Rank("karolin", "kathrin")
+
+	if expect != actual {
+		t.Error("Unexpected rank:", actual)
+	}
+}
+
 func TestByRank(t *testing.T) {
 	actual := []Ranking{
 		Ranking{
