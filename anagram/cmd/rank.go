@@ -36,7 +36,7 @@ var rankCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		anas := find()
 		ranks := anagram.RankAll(anas, anagram.DefaultLevenshteinRanker())
-		sort.Sort(anagram.ByRank(ranks))
+		sort.Sort(sort.Reverse(anagram.ByRank(ranks)))
 
 		for _, r := range ranks {
 			fmt.Printf("%v\t%v\t%v\n", r.Rank, r.A, r.B)

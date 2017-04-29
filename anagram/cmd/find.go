@@ -41,7 +41,7 @@ var findCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		anas := find()
 
-		sort.Sort(anagram.ByNumber(anas))
+		sort.Sort(sort.Reverse(anagram.ByNumber(anas)))
 
 		for _, a := range anas {
 			fmt.Println(strings.Join(a.Words, " "))
