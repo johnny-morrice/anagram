@@ -4,11 +4,31 @@ import (
 	"fmt"
 	"sort"
 	"strings"
+
+	leven "github.com/texttheater/golang-levenshtein/levenshtein"
 )
 
 type Anagram struct {
 	Words []string
 	Normal string
+}
+
+type ByNormal []*Anagram
+
+func (a ByNormal) Len() int { return len(a)}
+func (a ByNormal) Swap(i, j int) { a[i], a[j] = a[j], a[i]}
+
+func (a ByNormal) Less(i, j int) bool {
+	return a[i].Normal < a[j].Normal
+}
+
+type ByNumber []*Anagram
+
+func (a ByNumber) Len() int { return len(a)}
+func (a ByNumber) Swap(i, j int) { a[i], a[j] = a[j], a[i]}
+
+func (a ByNumber) Less(i, j int) bool {
+	return len(a[i].Words) < len(a[j].Words)
 }
 
 func (ar *Anagram) Normalize() error {
@@ -65,6 +85,17 @@ func (ar *Anagram) Rank(ranker Ranker) []Ranking {
 	return ranks
 }
 
+// TODO use pool of goroutines.
+func RankAll(anagrams []*Anagram, ranker Ranker) []Ranking {
+	out := []Ranking{}
+
+	for _, a := range anagrams {
+		out = append(out, a.Rank(ranker)...)
+	}
+
+	return out
+}
+
 // TODO Could use arrays.
 func bruteCombintations2(n int) [][]int {
 	len := fact(n) / (fact(2) * fact(n - 2))
@@ -103,8 +134,31 @@ type Ranking struct {
 	Rank int
 }
 
+type ByRank []Ranking
+
+func (r ByRank) Len() int { return len(r)}
+func (r ByRank) Swap(i, j int) { r[i], r[j] = r[j], r[i]}
+
+func (r ByRank) Less(i, j int) bool {
+	return r[i].Rank < r[j].Rank
+}
+
 type Ranker interface {
 	Rank(a, b string) int
+}
+
+type LevenshteinRanker struct {
+	Options leven.Options
+}
+
+func DefaultLevenshteinRanker() Ranker {
+	return LevenshteinRanker{Options: leven.DefaultOptions}
+}
+
+func (lr LevenshteinRanker) Rank(a, b string) int {
+	ar := []rune(a)
+	br := []rune(b)
+	return leven.DistanceForStrings(ar, br, lr.Options)
 }
 
 func GenAnagrams(words []string) []*Anagram{
@@ -129,19 +183,6 @@ func GenAnagrams(words []string) []*Anagram{
 	}
 
 	return anas
-}
-
-func SortAnagrams(anas []*Anagram) {
-	sort.Sort(byAnagram(anas))
-}
-
-type byAnagram []*Anagram
-
-func (a byAnagram) Len() int { return len(a)}
-func (a byAnagram) Swap(i, j int) { a[i], a[j] = a[j], a[i]}
-
-func (a byAnagram) Less(i, j int) bool {
-	return a[i].Normal < a[j].Normal
 }
 
 // TODO can optimize surely.

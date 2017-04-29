@@ -2,6 +2,7 @@ package anagram
 
 import (
 	"reflect"
+	"sort"
 	"testing"
 )
 
@@ -29,6 +30,44 @@ var dogAnagram *Anagram = &Anagram{
 	Normal: "dgo",
 }
 
+var slateAnagram *Anagram = &Anagram{
+	Words: []string{"least", "setal", "slate"},
+	Normal: "aelst",
+}
+
+func TestRank(t *testing.T) {
+	expect := []Ranking{
+		Ranking{
+			A: "least",
+			B: "setal",
+			Rank: 6,
+		},
+		Ranking{
+			A: "least",
+			B: "slate",
+			Rank: 4,
+		},
+		Ranking{
+			A: "setal",
+			B: "slate",
+			Rank: 6,
+		},
+	}
+
+	actual := slateAnagram.Rank(DefaultLevenshteinRanker())
+
+	if len(expect) != len(actual) {
+		t.Error("Mismatch in expect/actual length")
+	}
+
+	for i, a := range actual {
+		e := expect[i]
+		if e != a {
+			t.Error("Unexpected Ranking at", i, ":", a)
+		}
+	}
+}
+
 func TestGenAnagrams(t *testing.T) {
 	expect := []*Anagram{
 		catAnagram,
@@ -37,16 +76,15 @@ func TestGenAnagrams(t *testing.T) {
 	}
 
 	actual := GenAnagrams(words)
-	// Cheeky...
-	SortAnagrams(actual)
+	sort.Sort(ByNormal(actual))
 
 	if len(expect) != len(actual) {
-		panic("Mismatch in expect/actual length")
+		t.Error("Mismatch in expect/actual length")
 	}
 
 	for i, a := range actual {
 		if e := expect[i]; !e.Eq(a) {
-			t.Error("Unexpected Anagram:", a)
+			t.Error("Unexpected Anagram at", i, ":", a)
 		}
 	}
 }
@@ -120,14 +158,13 @@ func TestFact(t *testing.T) {
 	}
 
 	if len(expect) != len(actual) {
-		panic("Mismatch in expect/actual length")
+		t.Error("Mismatch in expect/actual length")
 	}
 
-	for i := 0; i < len(actual); i++ {
+	for i, a := range actual {
 		e := expect[i]
-		a := actual[i]
 		if e != fact(a) {
-			t.Error("Expected", e, "but received", a)
+			t.Error("factorial of", i, "should be", e, "but was", a)
 		}
 	}
 }
